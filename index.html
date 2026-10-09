@@ -1,0 +1,648 @@
+<!DOCTYPE html>
+<html lang="zh-CN" data-page-node-id="RqiE322q9Nve0liAJ9bU86">
+<head data-page-node-id="1N1FUbW1I9JWt8ZQbfYOOP">
+<meta charset="UTF-8" data-page-node-id="beaVsTiFCX9bcrZgxwUXBQ" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" data-page-node-id="Fx2J2KDCWNIpR2CQBKAGND" />
+<meta name="description" content="MCTI 麦当劳人格类型指标：用你的麦当劳历史订单测出 16 种人格并获取今日点餐推荐。复古 / 开心乐园餐玩具风格趣味测评。" />
+<title>MCTI · 麦当劳人格类型指标</title>
+<style>
+  :root{
+    --red:#E4002B; --yellow:#FFC72C; --cream:#FFF4DC; --teal:#15B8A6;
+    --navy:#1B2A4A; --pink:#FF6F91; --ink:#23201C; --paper:#FFFDF6;
+  }
+  *{box-sizing:border-box;-webkit-tap-highlight-color:transparent;}
+  html,body{margin:0;padding:0;}
+  body{
+    font-family:"Trebuchet MS","Segoe UI",-apple-system,"PingFang SC","Microsoft YaHei",sans-serif;
+    color:var(--ink);
+    background-color:var(--cream);
+    background-image:
+      radial-gradient(var(--yellow) 2px, transparent 2px),
+      radial-gradient(var(--teal) 2px, transparent 2px);
+    background-size:46px 46px;
+    background-position:0 0, 23px 23px;
+    line-height:1.6;
+  }
+  .wrap{max-width:540px;margin:0 auto;padding:14px 14px 60px;}
+  /* ---- header ---- */
+  header{
+    text-align:center;position:relative;
+    background:var(--red);
+    border:4px solid var(--ink);
+    border-radius:14px;
+    box-shadow:6px 6px 0 var(--ink);
+    padding:14px 12px 16px;
+    margin-bottom:16px;
+    overflow:hidden;
+  }
+  header::before{
+    content:"";position:absolute;inset:0;
+    background:repeating-linear-gradient(45deg,transparent 0 10px,rgba(255,255,255,.06) 10px 20px);
+  }
+  .arch{display:block;margin:0 auto 4px;}
+  h1{font-size:30px;margin:2px 0 0;color:var(--yellow);letter-spacing:2px;text-shadow:3px 3px 0 var(--ink);font-weight:900;}
+  .subtitle{color:#fff;font-size:13px;letter-spacing:1px;margin-top:2px;}
+  .tagline{display:inline-block;margin-top:8px;background:var(--yellow);color:var(--ink);
+    font-size:11px;padding:2px 10px;border:2px solid var(--ink);border-radius:20px;font-weight:700;}
+  /* ---- tabs ---- */
+  .tabs{display:flex;gap:8px;margin-bottom:16px;}
+  .tab{
+    flex:1;text-align:center;padding:11px 4px;font-weight:800;font-size:14px;cursor:pointer;
+    background:var(--paper);border:3px solid var(--ink);border-radius:12px;
+    box-shadow:3px 3px 0 var(--ink);transition:transform .08s;
+  }
+  .tab:active{transform:translate(2px,2px);box-shadow:1px 1px 0 var(--ink);}
+  .tab.active{background:var(--yellow);}
+  /* ---- card ---- */
+  .card{
+    background:var(--paper);border:4px solid var(--ink);border-radius:14px;
+    box-shadow:6px 6px 0 var(--ink);padding:16px;margin-bottom:16px;
+  }
+  .card h2{font-size:18px;margin:0 0 10px;display:flex;align-items:center;gap:8px;}
+  .badge{display:inline-block;background:var(--ink);color:var(--yellow);font-weight:900;
+    font-size:13px;padding:2px 9px;border-radius:8px;letter-spacing:1px;}
+  .typecode{font-size:46px;font-weight:900;letter-spacing:3px;color:var(--red);
+    text-shadow:2px 2px 0 var(--ink);text-align:center;margin:4px 0 2px;}
+  .typename{text-align:center;font-size:20px;font-weight:900;margin:0;}
+  .typestyle{text-align:center;font-size:13px;color:var(--navy);margin:4px 0 10px;font-weight:700;}
+  .traits{display:flex;flex-wrap:wrap;gap:6px;justify-content:center;margin:10px 0;}
+  .trait{background:var(--teal);color:#fff;font-size:12px;padding:3px 10px;border:2px solid var(--ink);border-radius:20px;font-weight:700;}
+  .desc{font-size:14px;line-height:1.7;background:#fff;border-left:5px solid var(--red);padding:10px 12px;border-radius:0 8px 8px 0;}
+  .quote{margin-top:10px;font-style:italic;font-weight:700;color:var(--red);font-size:15px;text-align:center;}
+  /* ---- axis bars ---- */
+  .axes{margin-top:6px;}
+  .axis{margin:10px 0;}
+  .axis .lab{display:flex;justify-content:space-between;font-size:13px;font-weight:700;margin-bottom:3px;}
+  .bar{height:16px;background:#eee;border:2px solid var(--ink);border-radius:10px;overflow:hidden;position:relative;}
+  .bar > i{display:block;height:100%;background:var(--red);}
+  .bar > b{position:absolute;top:-2px;font-size:10px;color:var(--ink);font-weight:800;}
+  /* ---- 16 grid ---- */
+  .grid{display:grid;grid-template-columns:repeat(2,1fr);gap:8px;}
+  .gcell{
+    border:3px solid var(--ink);border-radius:10px;padding:8px 6px;background:#fff;
+    cursor:pointer;text-align:center;transition:transform .08s;box-shadow:2px 2px 0 var(--ink);
+  }
+  .gcell:active{transform:translate(1px,1px);box-shadow:1px 1px 0 var(--ink);}
+  .gcell.me{background:var(--yellow);}
+  .gcell .gc{font-weight:900;font-size:14px;letter-spacing:1px;}
+  .gcell .gn{font-size:11px;color:var(--navy);margin-top:2px;line-height:1.3;}
+  .gcell .gs{font-size:10px;color:var(--red);font-weight:700;}
+  .sectiontitle{font-size:15px;font-weight:900;margin:18px 0 8px;color:var(--navy);
+    border-bottom:3px dashed var(--ink);padding-bottom:4px;}
+  /* ---- recommendation ---- */
+  .today-banner{background:var(--navy);color:#fff;border:3px solid var(--ink);border-radius:12px;
+    padding:10px 12px;font-size:13px;margin-bottom:14px;display:flex;justify-content:space-between;flex-wrap:wrap;gap:4px;}
+  .today-banner b{color:var(--yellow);}
+  .combo-item{display:flex;gap:12px;align-items:center;background:#fff;border:3px solid var(--ink);
+    border-radius:12px;padding:10px;margin-bottom:10px;box-shadow:3px 3px 0 var(--ink);}
+  .combo-item img{width:64px;height:64px;object-fit:contain;border:2px solid var(--ink);border-radius:8px;background:var(--cream);}
+  .combo-item .ph{width:64px;height:64px;border:2px dashed var(--ink);border-radius:8px;background:var(--cream);
+    display:flex;align-items:center;justify-content:center;font-weight:900;color:var(--red);font-size:20px;}
+  .ci-info{flex:1;}
+  .ci-name{font-weight:900;font-size:15px;}
+  .ci-role{font-size:11px;color:var(--teal);font-weight:700;}
+  .ci-price{font-weight:900;color:var(--red);font-size:14px;}
+  .rationale{font-size:13px;line-height:1.7;background:#fff;border:2px solid var(--ink);border-radius:10px;padding:10px 12px;}
+  .rationale li{margin:5px 0;}
+  .yiji{display:flex;gap:10px;flex-wrap:wrap;margin-top:6px;}
+  .yi,.ji{flex:1;min-width:140px;background:#fff;border:3px solid var(--ink);border-radius:10px;padding:8px 10px;}
+  .yi{border-color:var(--teal);}
+  .ji{border-color:var(--pink);}
+  .yi h4,.ji h4{margin:0 0 4px;font-size:13px;}
+  .yi h4{color:var(--teal);} .ji h4{color:var(--pink);}
+  .yi ul,.ji ul{margin:0;padding-left:16px;font-size:13px;}
+  .total{text-align:center;font-size:18px;font-weight:900;margin-top:8px;color:var(--red);}
+  .total small{color:var(--ink);font-size:12px;font-weight:700;}
+  /* ---- toy ---- */
+  .toy{display:flex;gap:12px;align-items:center;}
+  .toy svg{flex:none;}
+  .toy .tinfo b{color:var(--red);}
+  /* ---- data note ---- */
+  textarea{width:100%;height:96px;border:3px solid var(--ink);border-radius:10px;padding:8px;
+    font-family:"Courier New",monospace;font-size:11px;background:var(--cream);resize:vertical;}
+  .btn{display:inline-block;background:var(--red);color:#fff;border:3px solid var(--ink);border-radius:10px;
+    padding:9px 14px;font-weight:800;font-size:14px;cursor:pointer;box-shadow:3px 3px 0 var(--ink);
+    transition:transform .08s;margin-top:8px;}
+  .btn:active{transform:translate(2px,2px);box-shadow:1px 1px 0 var(--ink);}
+  .btn.ghost{background:var(--paper);color:var(--ink);}
+  .note{font-size:11px;color:#7a736a;line-height:1.6;margin-top:8px;}
+  .hidden{display:none;}
+  .foot{text-align:center;font-size:11px;color:#9a9389;margin-top:18px;line-height:1.6;}
+  .modal-mask{position:fixed;inset:0;background:rgba(35,32,28,.55);display:none;align-items:center;justify-content:center;padding:18px;z-index:50;}
+  .modal-mask.show{display:flex;}
+  .modal{background:var(--paper);border:4px solid var(--ink);border-radius:14px;box-shadow:8px 8px 0 var(--ink);
+    max-width:440px;width:100%;padding:18px;max-height:86vh;overflow:auto;}
+  .modal .close{float:right;cursor:pointer;font-weight:900;font-size:18px;border:2px solid var(--ink);
+    border-radius:8px;padding:0 8px;background:var(--yellow);}
+</style>
+</head>
+<body data-page-node-id="MAp7M6cLJBSPZ7qe8hBWH5">
+<div class="wrap" data-page-node-id="DSqdKExxeY9eSQAGARwbrT">
+  <header data-page-node-id="bWamZymsRGytuN3PQ3iQ0i">
+    <svg class="arch" width="120" height="46" viewBox="0 0 120 46" aria-hidden="true" data-page-node-id="C2D5nBawjBQeH0EbOvXLQr">
+      <path d="M6 44 V20 Q6 6 20 6 Q34 6 34 20 V44 Z" fill="#FFC72C" stroke="#23201C" stroke-width="3" data-page-node-id="OjxiGoYB1j1JN1bIcsa0Js"/>
+      <path d="M44 44 V20 Q44 6 58 6 Q72 6 72 20 V44 Z" fill="#FFC72C" stroke="#23201C" stroke-width="3" data-page-node-id="HFDNvUYHHRtkx4J4Jq4nwy"/>
+      <path d="M82 44 V20 Q82 6 96 6 Q110 6 110 20 V44 Z" fill="#FFC72C" stroke="#23201C" stroke-width="3" data-page-node-id="1ZptZ3hmtHvwLjQKeFu9Fa"/>
+    </svg>
+    <h1 data-page-node-id="6UaOdNBQFTxbSlwL0bXpIS">MCTI</h1>
+    <div class="subtitle" data-page-node-id="VwJYLZoJVrtoDrEZ1OBl6m">麦当劳人格类型指标 · McDonald's Character Type Indicator</div>
+    <div class="tagline" data-page-node-id="w8eC4cFwDUCDeWvK95fQJT">用你吃过的麦记，测出你是哪种人</div>
+  </header>
+
+  <div class="tabs" data-page-node-id="Ch1vgbPdHbf5ic93BiO15Y">
+    <div class="tab active" id="tab1" onclick="switchTab(1)" data-page-node-id="UwsbnNJZIArZ5WPUYCLzkg">人格测试结果</div>
+    <div class="tab" id="tab2" onclick="switchTab(2)" data-page-node-id="htYdmxNvRm3BDgwJvE4APW">今日点餐推荐</div>
+  </div>
+
+  <!-- ============ PAGE 1 ============ -->
+  <div id="page1" data-page-node-id="mrAOW19Qp4XxBctRBz7NlM">
+    <div class="card" data-page-node-id="M6ilijGcGYU0IAakUpR0Aj">
+      <h2 data-page-node-id="7TETOLeP0bqAgqTRy0PyxG"><span class="badge" data-page-node-id="l4ZKEudDTkHV8Xav0T3QQo">RESULT</span> 你的人格类型</h2>
+      <div class="typecode" id="r-code" data-page-node-id="zASGGmFEN9fXGBsGUFk61L">----</div>
+      <div class="typename" id="r-name" data-page-node-id="ZSwHSdG2DhRCWIOC27I9Ti">测算中…</div>
+      <div class="typestyle" id="r-style" data-page-node-id="EqcSV08uX79Vy907u8s51p"></div>
+      <div class="traits" id="r-traits" data-page-node-id="s5qTl0mhDcKRX1atbvD6z6"></div>
+      <div class="desc" id="r-desc" data-page-node-id="eB5OWMxFwoJuqNQEFVsuOM"></div>
+      <div class="quote" id="r-quote" data-page-node-id="7vgM82gu5S31SuuYEq0rCb"></div>
+    </div>
+
+    <div class="card" data-page-node-id="nAsg7FMgr82MheBs43kcgH">
+      <h2 data-page-node-id="ORGxT3vfvPFnJVfwKmtxpK"><span class="badge" data-page-node-id="Ijpov5M2E6PoHsElesHrMW">STATS</span> 四维剖面</h2>
+      <div class="axes" id="r-axes" data-page-node-id="F9XFzgrJ2HNgTdcyajfDw9"></div>
+      <p class="note" id="r-datasrc" data-page-node-id="7KKSVk9jLNuBnkCUIwH0J2"></p>
+    </div>
+
+    <div class="sectiontitle" data-page-node-id="kwH2pzqwvu74kDqALCRFIJ">★ 全部 16 种 MCTI 人格（点我查看）</div>
+    <div class="grid" id="r-grid" data-page-node-id="PRuTbyyNMH7NqbLUMwEYGM"></div>
+  </div>
+
+  <!-- ============ PAGE 2 ============ -->
+  <div id="page2" class="hidden" data-page-node-id="WvcGFGc6pA5J6tD7RBfWwo">
+    <div class="today-banner" data-page-node-id="IgNB9bXCYsRZ5LVscuTBfC">
+      <span data-page-node-id="01XVblSorHqtuzyy7zyC4A">数据快照（mcd-mcp）：<b id="snap-time" data-page-node-id="ZIuVo82XP7reqJFlnjN8sN">—</b></span>
+      <span data-page-node-id="SvIRFdQ5qfNWIQEhWvJlLd">当前时段：<b id="slot-label" data-page-node-id="xtdiEBJE1DH9QmliMyJ62P">—</b></span>
+    </div>
+
+    <div class="card" data-page-node-id="gS7KCBOQQljFKTTbFnSAix">
+      <h2 data-page-node-id="323BJOElryxFZ32bEjdGNJ"><span class="badge" data-page-node-id="mlC3qiClXjiXhH3MC5BXCE">MENU</span> 今日为你推荐</h2>
+      <div id="combo-list" data-page-node-id="4WHrqHI9Qdxm14o5wLmVBr"></div>
+      <div class="total" id="combo-total" data-page-node-id="hnXXN6JpYksMS1jFtRJXZJ"></div>
+    </div>
+
+    <div class="card" data-page-node-id="EanKbcOQWAfXIQTbyMn4QW">
+      <h2 data-page-node-id="6utS09QtqzgNZS68ORDWrb"><span class="badge" data-page-node-id="cT22uSGRo5IzktP0GlYhz0">WHY</span> 为什么这么配</h2>
+      <ul class="rationale" id="combo-why" data-page-node-id="Du7oGLmPiYtEnoDzlz8cOZ"></ul>
+    </div>
+
+    <div class="card" data-page-node-id="Bcw8HS1UZduL0mlxUUJeER">
+      <h2 data-page-node-id="wDGll4B6M44UCoAtDwtTd3"><span class="badge" data-page-node-id="79tkUcsUPBYzOFGQxF8YxW">LUCK</span> 今日宜 / 忌</h2>
+      <div class="yiji" data-page-node-id="ogt9St9sFJ5LhBfbMtFDHH">
+        <div class="yi" data-page-node-id="kAV5WMqjab4tVxx1DuUCO5"><h4 data-page-node-id="8VVIHWYtSDRMVLhQZp35gs">宜</h4><ul id="yi-list" data-page-node-id="ncufzrPeedxG2PUls5s0WO"></ul></div>
+        <div class="ji" data-page-node-id="TRNF8BZUlYSuAD1fxScHhL"><h4 data-page-node-id="CRTTPZeOggsHd9GbJj5QXu">忌</h4><ul id="ji-list" data-page-node-id="7ywayys3Uxz9Iu9pTCMsKs"></ul></div>
+      </div>
+    </div>
+
+    <div class="card" data-page-node-id="YIqOhkO5DpLOw8frdLG1t7">
+      <h2 data-page-node-id="WPj1gSRbmwBBUhoHEqeFkg"><span class="badge" data-page-node-id="o6XyKkhdN67LmGFW5vFzG5">TOY</span> 你的本命开心乐园餐玩具</h2>
+      <div class="toy" id="toy-box" data-page-node-id="codfcfuMqHjMiTJNmkJ8Mg"></div>
+    </div>
+
+    <p class="note" id="menu-note" data-page-node-id="jBCHdwmn42K9HzSO1MK1IN"></p>
+  </div>
+
+  <div class="card" data-page-node-id="hQmdyLoN7IygBn51ZnoJmA">
+    <h2 data-page-node-id="D0g0LB4X1GATCTs7t6AiwJ"><span class="badge" data-page-node-id="heJWHexTlWJlWdazpAsFK3">DATA</span> 数据来源 / 重新测算</h2>
+    <p class="note" data-page-node-id="BRUFQhbsNYoR99Mt28iIkb">下方为通过 <b data-page-node-id="2a2NuSUxPJAOnFuBVnnTzR">mcd-mcp · order-list</b> 读取到的真实历史订单（已脱敏为分析用字段）。可粘贴你自己的订单 JSON 后点「用这份数据测算」。</p>
+    <textarea id="data-input"></textarea>
+    <button class="btn" onclick="recomputeFromInput()" data-page-node-id="9iAK2iM0UFh3festOob8wS">用这份数据测算</button>
+    <button class="btn ghost" onclick="resetData()" data-page-node-id="k6ujL9xwkkBvGgGXH3T1sO">恢复默认数据</button>
+  </div>
+
+  <div class="foot" data-page-node-id="j1AlXC3A41sVBbjP7jtaMi">
+    本工具为粉丝向趣味测评，灵感来自开心乐园餐玩具文化，非麦当劳官方产品。<br data-page-node-id="P5G5lkvNzEgx8METqjwiQV"/>
+    人格类型为娱乐化解读，不构成任何消费、营养或心理建议。请理性点单，开心就好。
+  </div>
+</div>
+
+<!-- modal -->
+<div class="modal-mask" id="modal" onclick="if(event.target===this)closeModal()" data-page-node-id="2FM4YCtJiTf7Vefy1ziHLm">
+  <div class="modal" data-page-node-id="gyKqZcltHlNXXToWsVqV8L">
+    <span class="close" onclick="closeModal()" data-page-node-id="TIR8RDa0y6JotLpZCdbdoe">×</span>
+    <div id="modal-body" data-page-node-id="7Adm2c4pQKwAdrg59sm8oR"></div>
+  </div>
+</div>
+
+<script>
+/* ===================== 真实历史订单（mcd-mcp order-list 读取） ===================== */
+const DEFAULT_ORDERS = [
+  {date:"2026-10-09", hour:8,  store:"深圳储能大厦", name:"吉士蛋麦满分组合",          amt:7.2},
+  {date:"2026-10-08", hour:9,  store:"深圳储能大厦", name:"吉士蛋麦满分组合",          amt:7.2},
+  {date:"2026-10-07", hour:9,  store:"深圳南山",     name:"吉士蛋麦满分组合",          amt:19.1},
+  {date:"2026-09-30", hour:9,  store:"深圳储能大厦", name:"吉士蛋麦满分组合",          amt:12.0},
+  {date:"2026-09-03", hour:8,  store:"北京学院国际大厦", name:"东南亚风味椰香鸡扒堡组合", amt:9.9},
+  {date:"2026-03-25", hour:9,  store:"深圳储能大厦", name:"吉士蛋麦满分组合",          amt:7.2},
+  {date:"2026-03-24", hour:9,  store:"深圳储能大厦", name:"吉士蛋麦满分组合",          amt:7.2},
+  {date:"2026-03-23", hour:9,  store:"深圳储能大厦", name:"吉士蛋麦满分组合",          amt:7.2},
+  {date:"2026-03-21", hour:9,  store:"深圳南山",     name:"吉士蛋麦满分组合",          amt:7.2},
+  {date:"2026-03-20", hour:9,  store:"深圳储能大厦", name:"吉士蛋麦满分组合",          amt:7.2}
+];
+const SNAP_TIME = "2026-10-09 周五 17:33";
+
+/* ===================== 真实菜单节选（mcd-mcp query-meals） ===================== */
+const IMG = "https://menu-img.mcd.cn/pcm/prod/menu/";
+const MENU = {
+  mains:{
+    bfastLoyal:{name:"吉士蛋麦满分", price:7.2, img:"", tags:["咸","早餐"]},
+    bfastWild:{name:"东南亚风味椰香鸡扒堡", price:9.9, img:"", tags:["咸","早餐","尝新"]},
+    loyal:{name:"板烧鸡腿堡", price:23.5, img:IMG+"20241008/product/MS_1406_320.png", tags:["咸"]},
+    value:{name:"麦辣鸡腿汉堡", price:22.5, img:IMG+"20260325/product/MS_1440_320.png", tags:["咸","辣"]},
+    wander:{name:"龙焰鸡腿堡", price:24, img:IMG+"ProductPool/product/MS_521952_320.png", tags:["咸","尝新","辣"]},
+    luxe:{name:"培根安格斯厚牛堡", price:34.5, img:IMG+"20260309/product/MS_511781_320.png", tags:["咸","阔"]},
+    fish:{name:"麦香鱼", price:22.5, img:IMG+"20260101/product/MS_1600_320.png", tags:["咸"]},
+    roll:{name:"酥酥多笋卷", price:20.5, img:IMG+"ProductPool/product/MS_521816_320.png", tags:["咸","尝新"]}
+  },
+  sides:{
+    fries:{name:"薯条", price:13.5, img:IMG+"20250523/product/MS_G4810_320_1747877491921.png", tags:["咸"]},
+    nuggets:{name:"麦乐鸡", price:14, img:IMG+"20260529/product/MS_G1401_320.png", tags:["咸"]},
+    wings:{name:"麦辣鸡翅", price:15, img:IMG+"20260325/product/MS_G1700_320.png", tags:["咸","辣"]},
+    corn:{name:"玉米杯", price:13, img:IMG+"ProductPool/product/MS_G4437_320.png", tags:["淡"]},
+    apple:{name:"苹果片", price:7, img:IMG+"ProductPool/product/MS_6102_320.png", tags:["甜","健康"]},
+    cheese:{name:"马苏里拉拉丝芝士条", price:11, img:IMG+"ProductPool/product/MS_G521986_320.png", tags:["咸"]},
+    bff:{name:"BFF四宫格小食盘", price:39.8, img:IMG+"ProductPool/product/MS_9900015730_320.gif", tags:["咸","社交","阔"]}
+  },
+  desserts:{
+    mcflurry:{name:"经典麦旋风", price:15.5, img:IMG+"ProductPool/product/MS_9900008754_320.gif", tags:["甜"]},
+    blueberry:{name:"蓝莓爆爆珠麦旋风", price:16.5, img:IMG+"ProductPool/product/MS_G521950_320.gif", tags:["甜"]},
+    lemon:{name:"柠檬脆脆麦旋风", price:16.5, img:IMG+"ProductPool/product/MS_G521836_320.gif", tags:["甜"]},
+    sundae:{name:"新地", price:12, img:IMG+"ProductPool/product/MS_9900008745_320.gif", tags:["甜"]},
+    pie:{name:"派", price:8.5, img:IMG+"ProductPool/product/MS_G9900008752_320.gif", tags:["甜"]},
+    cone:{name:"圆筒冰淇淋", price:5, img:IMG+"ProductPool/product/MS_515837_320.png", tags:["甜"]}
+  },
+  drinks:{
+    coffee:{name:"鲜萃咖啡", price:9.5, img:IMG+"20250324/product/MS_G520688_320.gif", tags:["中性","热"]},
+    americano:{name:"麦咖啡™美式", price:9.9, img:IMG+"20260422/product/MS_G507374_320.gif", tags:["中性"]},
+    latte:{name:"麦咖啡™奶铁", price:9.9, img:IMG+"20260422/product/MS_G507372_320.gif", tags:["甜","热"]},
+    cola:{name:"可乐", price:9.5, img:IMG+"ProductPool/product/MS_9900008751_320.gif", tags:["甜"]},
+    lemontea:{name:"阳光柠檬红茶", price:9.5, img:IMG+"ProductPool/product/MS_G515280_320.png", tags:["甜"]},
+    coconut:{name:"椰奶雪冰", price:9.9, img:IMG+"ProductPool/product/MS_521717_320.gif", tags:["甜"]},
+    applejuice:{name:"100%苹果汁", price:11.5, img:IMG+"20250430/product/MS_6362_320_1745552987716.png", tags:["甜"]},
+    milk:{name:"纯牛奶", price:10.5, img:IMG+"20240731/product/MS_3755_320.png", tags:["中性"]}
+  },
+  happy:{name:"开心乐园餐", price:23.5, img:IMG+"ProductPool/product/MS_9900016057_320.png", tags:["童趣","社交"]}
+};
+
+/* ===================== 16 型人格定义 ===================== */
+const TYPES = {
+  MAFV:{name:"晨光麦门守门员", style:"高冷型", color:"#1B2A4A",
+    traits:["稳定","自律","极简","时间管理"],
+    desc:"你的订单像钟表一样精准——同一个麦满分，同一个清晨，同一份从容。表面是高冷的效率机器，实则把「稳定」过成了一种浪漫。",
+    quote:"我的快乐很简单：一个麦满分，刚好够。",
+    toy:{name:"发条机器人", d:"上了发条就稳定运转一整天，像你的作息。"}},
+  MAFS:{name:"甜系晨型小狗", style:"快乐小狗型", color:"#FF6F91",
+    traits:["元气","甜党","早起","黏人"],
+    desc:"早餐也要先甜一口，咖啡配甜点，摇着尾巴出门。你是清晨第一缕阳光，连店员都记住了你的脸。",
+    quote:"新的一天，要先甜后咸才圆满！",
+    toy:{name:"橡皮小鸭", d:"黄澄澄、软乎乎，见水就开心。"}},
+  MALV:{name:"麦门早鸟阔少", style:"傲娇型", color:"#E4002B",
+    traits:["忠诚","早起","舍得","嘴硬"],
+    desc:"同样的麦满分，你偏要配齐豪华版；嘴上说「随便吃点」，钱包却很诚实。忠诚又傲娇，是麦门里最体面的那一位。",
+    quote:"不是贵，是值得对我自己好。",
+    toy:{name:"迷你卡带机", d:"经典款也要收藏限定色。"}},
+  MALS:{name:"甜奢晨光贵公喵", style:"小猫塑", color:"#15B8A6",
+    traits:["精致","甜党","优雅","慢热"],
+    desc:"早餐必须甜且讲究，优雅地宠自己，绝不将就。你是清晨的贵公喵，连撕开糖包都有仪式感。",
+    quote:"将就？那不如不吃。",
+    toy:{name:"绒布小猫", d:"被rua一万次也不掉毛。"}},
+  MNFS:{name:"深夜甜心麦门", style:"丧系·治愈", color:"#7A5CC9",
+    traits:["夜行","甜党","自愈","温柔"],
+    desc:"白天搬砖，深夜才冒泡，来份甜的给疲惫的一天盖章。你是丧系里最会自愈的那一个，甜的是胃，暖的是心。",
+    quote:"今天的累，甜一口就翻篇。",
+    toy:{name:"八音盒", d:"拧一圈，放空三分钟。"}},
+  MNFV:{name:"夜班实干咸鱼", style:"高冷型", color:"#34495E",
+    traits:["夜行","咸党","务实","沉稳"],
+    desc:"夜猫子，咸口管饱，沉默地扛住生活的总和。表面是一条咸鱼，其实是有重量的那种。",
+    quote:"不说苦，吃饱了再说。",
+    toy:{name:"回力车", d:"蓄力、松手、闷头向前。"}},
+  MNLS:{name:"夜猫甜奢玩家", style:"无厘头型", color:"#FF8C42",
+    traits:["夜行","甜奢","随性","会玩"],
+    desc:"半夜也要吃贵的甜的，快乐不讲道理。你是深夜游乐场的常客，钱包偶尔哭，但嘴角一直扬。",
+    quote:"深夜的甜，是成年人最后的任性。",
+    toy:{name:"闪光陀螺", d:"转起来五光十色，像你的夜生活。"}},
+  MNLV:{name:"深夜阔气浪子", style:"傲娇型", color:"#C0392B",
+    traits:["夜行","阔气","挑剔","潇洒"],
+    desc:"深夜放纵，咸香豪华，嘴上说随便其实很挑。你是用晚餐定义夜晚的人，阔气里带着傲娇的体面。",
+    quote:"随便点？那不可能，我挑得很。",
+    toy:{name:"合金小车", d:"收藏级，舍不得真开。"}},
+  WAFS:{name:"浪系甜心晨鸟", style:"小狗塑", color:"#FFB400",
+    traits:["尝新","甜党","好奇","晨型"],
+    desc:"早上什么都想尝，甜的总排第一，好奇宝宝本宝。你是把早餐吃成盲盒的人，每天开新口味。",
+    quote:"今天的限定甜品，我先冲！",
+    toy:{name:"弹力球", d:"蹦跶着探索每个角落。"}},
+  WAFV:{name:"早鸟尝鲜实干家", style:"搞笑型", color:"#2E86C1",
+    traits:["尝新","早起","务实","乐天"],
+    desc:"每天换花样但永远务实，早餐界的探险家兼段子手。你是那种「换个新堡也要算性价比」的可爱人类。",
+    quote:"新鲜感我有，性价比我也要。",
+    toy:{name:"积木", d:"怎么拼都行，但地基要稳。"}},
+  WALS:{name:"甜奢体验派", style:"小猫塑", color:"#16A085",
+    traits:["尝新","甜奢","讲究","慢热"],
+    desc:"愿意为新鲜的、甜的、贵的买单，生活需要仪式感。你是把尝鲜过成展览的人，每一口都拍照留念。",
+    quote:"好吃要趁热，好物要收藏。",
+    toy:{name:"迷你相机", d:"记录每一份甜。"}},
+  WALV:{name:"阔气探险家", style:"无厘头型", color:"#E67E22",
+    traits:["尝新","阔气","大胆","爱玩"],
+    desc:"新出的全来一遍，咸香豪华，吃的是新鲜感本身。你是菜单的哥伦布，发现新大陆就发朋友圈。",
+    quote:"没吃过？那更得点。",
+    toy:{name:"指南针", d:"指哪吃哪，勇敢出发。"}},
+  WNFS:{name:"深夜甜点流浪猫", style:"小猫塑", color:"#8E44AD",
+    traits:["夜行","尝新","甜党","自由"],
+    desc:"半夜觅食，甜的优先，自由又慵懒。你是深夜街头的流浪猫，优雅地挑一家还亮着灯的店。",
+    quote:"月亮不睡我不睡，甜点管够。",
+    toy:{name:"毛线球", d:"滚到哪算哪。"}},
+  WNFV:{name:"夜探尝鲜咸食客", style:"搞笑型", color:"#2980B9",
+    traits:["夜行","尝新","咸党","幽默"],
+    desc:"深夜也要试新，咸口管饱，边吃边吐槽。你是夜宵界的探店博主，毒舌但真诚。",
+    quote:"这家新品？让我来当第一个评委。",
+    toy:{name:"手电筒", d:"专照深夜隐藏菜单。"}},
+  WNLS:{name:"夜猫甜奢流浪者", style:"丧系·治愈", color:"#6C5CE7",
+    traits:["夜行","尝新","甜奢","自愈"],
+    desc:"累了就吃顿好的甜的，自我疗愈型流浪者。你是丧系里的生活家，用甜宠自己，用新味换心情。",
+    quote:"心情不好？那更要吃点好的。",
+    toy:{name:"折纸套装", d:"一张纸也能折出小确幸。"}},
+  WNLV:{name:"深夜无厘头帝王", style:"无厘头型", color:"#D63031",
+    traits:["夜行","尝新","阔气","脑洞"],
+    desc:"半夜点最离谱最贵的组合，快乐至上。你是深夜菜单的帝王，脑洞比卡路里还高。",
+    quote:"深夜下单，主打一个离谱但快乐。",
+    toy:{name:"魔术方块", d:"越玩越上头，越夜越清醒。"}},
+};
+
+/* ===================== 分析引擎 ===================== */
+function flavorOf(name){
+  const sweet=["甜","派","雪","麦旋风","圣代","新地","糖","巧克力","草莓","蓝莓","奶","冰","汁","可乐","柠檬","椰","橙"];
+  const savory=["堡","鸡","牛","猪","鱼","薯","麦满分","翅","卷","虾","玉米","蛋","咸","扒","培"];
+  for(const k of savory){ if(name.indexOf(k)>=0) return -1; }
+  for(const k of sweet){ if(name.indexOf(k)>=0) return 1; }
+  return 0;
+}
+function analyze(orders){
+  if(!orders||!orders.length) return {code:"????", stats:{}, src:""};
+  const freq={};
+  orders.forEach(o=>{freq[o.name]=(freq[o.name]||0)+1;});
+  const top=Math.max.apply(null,Object.values(freq));
+  const loyal = (top/orders.length)>=0.6 ? "M":"W";
+
+  let morning=0,night=0;
+  orders.forEach(o=>{const h=o.hour; if(h>=5&&h<=10)morning++; else if(h>=21||h<5)night++;});
+  const time = (morning>=night && morning>0) ? "A" : (night>0?"N":"A");
+
+  const avg=orders.reduce((s,o)=>s+(+o.amt||0),0)/orders.length;
+  const spend = avg>=15 ? "L":"F";
+
+  let sweet=0,savory=0;
+  orders.forEach(o=>{const f=flavorOf(o.name); if(f>0)sweet+=f; else if(f<0)savory+=1;});
+  const flavor = sweet>=savory ? "S":"V";
+
+  // 轴百分比（用于可视化）
+  const loyaltyPct=Math.round(top/orders.length*100);
+  const morningPct=orders.length?Math.round(morning/orders.length*100):0;
+  const nightPct=orders.length?Math.round(night/orders.length*100):0;
+  const timePct = morning>=night ? morningPct : nightPct;
+  const timeOther = morning>=night ? nightPct : morningPct;
+  const avgShow=avg.toFixed(1);
+  const flavorPct = Math.round((savory/(savory+sweet||1))*100);
+
+  const stats={
+    loyal:{v:loyal, p:loyaltyPct, a:"麦门信徒", b:"浪系尝鲜"},
+    time:{v:time, p:timePct, o:timeOther, a:"早鸟型", b:"夜猫型"},
+    spend:{v:spend, avg:avgShow, a:"持家型", b:"阔气型"},
+    flavor:{v:flavor, p:flavorPct, a:"咸香派", b:"甜党"}
+  };
+  const dates=orders.map(o=>o.date).sort();
+  const src=`基于 ${orders.length} 笔历史订单（${dates[0]} ~ ${dates[dates.length-1]}）分析得出`;
+  return {code:loyal+time+spend+flavor, stats, src};
+}
+
+/* ===================== 推荐引擎 ===================== */
+function slotOf(h){
+  if(h>=5&&h<11) return {key:"breakfast",label:"早餐时段"};
+  if(h>=11&&h<14) return {key:"lunch",label:"午餐时段"};
+  if(h>=14&&h<17) return {key:"afternoon",label:"下午茶时段"};
+  if(h>=17&&h<21) return {key:"dinner",label:"晚餐时段"};
+  return {key:"latenight",label:"深夜时段"};
+}
+function buildCombo(type, slot){
+  const [loyal,time,spend,flavor]=type.split("");
+  const items=[], why=[];
+  // 主餐
+  let main;
+  if(slot.key==="breakfast"){
+    main = (loyal==="M")?MENU.mains.bfastLoyal:MENU.mains.bfastWild;
+  }else if(spend==="L"){
+    main=MENU.mains.luxe;
+  }else if(loyal==="W"){
+    main=(time==="N")?MENU.mains.wander:MENU.mains.roll;
+  }else{
+    main=MENU.mains.loyal;
+  }
+  items.push({...main, role:"主餐"});
+  why.push(`主餐选「${main.name}」：${loyal==="M"?"呼应你对招牌的忠诚，熟悉即安心":loyal==="W"?"满足你爱尝新的天性，新口味才带劲":"经典稳妥，正合你务实的胃口"}。`);
+
+  // 小食
+  let side;
+  if(flavor==="V"){ side = (spend==="L")?MENU.sides.bff:MENU.sides.fries; }
+  else { side = MENU.sides.apple; }
+  items.push({...side, role:"小食"});
+  why.push(`小食配「${side.name}」：${flavor==="V"?"咸香管饱，正合你口味":"清爽不腻，平衡你的甜系偏好"}。`);
+
+  // 饮品
+  let drink;
+  if(slot.key==="breakfast") drink=MENU.drinks.coffee;
+  else if(spend==="L") drink=MENU.drinks.latte;
+  else if(flavor==="S") drink=MENU.drinks.applejuice;
+  else if(slot.key==="latenight") drink=MENU.drinks.milk;
+  else drink=MENU.drinks.cola;
+  items.push({...drink, role:"饮品"});
+  why.push(`饮品安排「${drink.name}」：${slot.key==="breakfast"?"延续你的晨间咖啡习惯":spend==="L"?"阔气型就该配杯奶香":"解腻提神，刚好"}。`);
+
+  // 甜点
+  if(flavor==="S"||spend==="L"){
+    const d=(spend==="L")?MENU.desserts.blueberry:MENU.desserts.mcflurry;
+    items.push({...d, role:"甜点"});
+    why.push(`加一份「${d.name}」：${flavor==="S"?"甜党本甜，快乐加倍":"偶尔宠己，生活需要甜"}。`);
+  }
+  // 开心乐园餐
+  if(loyal==="W"||time==="N"){
+    items.push({...MENU.happy, role:"彩蛋"});
+    why.push(`彩蛋「开心乐园餐」：${loyal==="W"?"尝新型人格的童趣加餐":"深夜也要有仪式感，找回一点孩子气"}。`);
+  }
+  const total=items.reduce((s,i)=>s+i.price,0);
+  return {items, why, total:total.toFixed(1)};
+}
+
+/* 宜忌 */
+function yijiOf(type){
+  const [loyal,time,spend,flavor]=type.split("");
+  const yi=[], ji=[];
+  if(loyal==="M"){yi.push("忠于本心，稳定输出");ji.push("一味将就凑合");}
+  else {yi.push("大胆尝鲜，开阔胃口");ji.push("选择困难原地打转");}
+  if(time==="A"){yi.push("早起吃顿好早餐");ji.push("空腹硬扛一上午");}
+  else {yi.push("给自己加一顿夜宵");ji.push("熬夜内耗不进食");}
+  if(spend==="F"){yi.push("精打细算薅套餐");ji.push("冲动加购超预算");}
+  else {yi.push("偶尔大方宠自己");ji.push("天天放纵钱包哭");}
+  if(flavor==="S"){yi.push("甜一下治愈自己");ji.push("甜到发齁不设防");}
+  else {yi.push("咸香管饱顶饱腹");ji.push("重口过量伤肠胃");}
+  return {yi:yi.slice(0,3), ji:ji.slice(0,3)};
+}
+
+/* ===================== 渲染 ===================== */
+let CURRENT = null;
+function renderResult(res){
+  const t=TYPES[res.code]||{name:"神秘型",style:"",color:"#999",traits:[],desc:"",quote:"",toy:{name:"",d:""}};
+  document.getElementById("r-code").textContent=res.code;
+  document.getElementById("r-code").style.color=t.color||"var(--red)";
+  document.getElementById("r-name").textContent=t.name;
+  document.getElementById("r-style").textContent=t.style?("风格："+t.style):"";
+  document.getElementById("r-traits").innerHTML=(t.traits||[]).map(x=>`<span class="trait">${x}</span>`).join("");
+  document.getElementById("r-desc").textContent=t.desc||"";
+  document.getElementById("r-quote").textContent=t.quote||"";
+  document.getElementById("r-datasrc").textContent=res.src||"";
+
+  const s=res.stats;
+  const ax=[];
+  if(s.loyal){
+    ax.push(axisHTML("麦门忠诚度", s.loyal.p, s.loyal.a, s.loyal.b, s.loyal.v==="M"));
+  }
+  if(s.time){
+    ax.push(axisHTML(s.time.a+" vs "+s.time.b, s.time.p, s.time.a, s.time.b, s.time.v==="A"));
+  }
+  if(s.spend){
+    ax.push(axisHTML("花钱哲学（均价¥"+s.spend.avg+"）", s.spend.v==="F"?70:30, s.spend.a, s.spend.b, s.spend.v==="F"));
+  }
+  if(s.flavor){
+    ax.push(axisHTML("甜咸偏好", s.flavor.p, s.flavor.a, s.flavor.b, s.flavor.v==="V"));
+  }
+  document.getElementById("r-axes").innerHTML=ax.join("");
+
+  // 16 grid
+  const order=Object.keys(TYPES);
+  document.getElementById("r-grid").innerHTML=order.map(code=>{
+    const x=TYPES[code];
+    const me=code===res.code?" me":"";
+    return `<div class="gcell${me}" onclick="showType('${code}')">
+      <div class="gc" style="color:${x.color}">${code}</div>
+      <div class="gn">${x.name}</div>
+      <div class="gs">${x.style}</div></div>`;
+  }).join("");
+}
+function axisHTML(label,pct,a,b,leftWin){
+  const p=Math.max(6,Math.min(100,pct));
+  return `<div class="axis"><div class="lab"><span>${a}</span><span>${b}</span></div>
+    <div class="bar"><i style="width:${p}%"></i></div>
+    <div class="lab" style="color:#7a736a;font-weight:700"><span>${label}</span><span>${p}%</span></div></div>`;
+}
+
+function renderRecommend(type){
+  const now=new Date();
+  const slot=slotOf(now.getHours());
+  document.getElementById("snap-time").textContent=SNAP_TIME;
+  document.getElementById("slot-label").textContent=slot.label;
+
+  const combo=buildCombo(type, slot);
+  document.getElementById("combo-list").innerHTML=combo.items.map(it=>{
+    const ph = it.img ? `<img src="${it.img}" alt="${it.name}" loading="lazy"/>`
+                      : `<div class="ph">${it.name.charAt(0)}</div>`;
+    return `<div class="combo-item">${ph}
+      <div class="ci-info"><div class="ci-name">${it.name}</div>
+      <div class="ci-role">${it.role}</div></div>
+      <div class="ci-price">¥${it.price}</div></div>`;
+  }).join("");
+  document.getElementById("combo-total").innerHTML=`预估合计 <span style="font-size:24px">¥${combo.total}</span> <small>（参考价，以门店实际为准）</small>`;
+  document.getElementById("combo-why").innerHTML=combo.why.map(w=>`<li>${w}</li>`).join("");
+
+  const yj=yijiOf(type);
+  document.getElementById("yi-list").innerHTML=yj.yi.map(x=>`<li>${x}</li>`).join("");
+  document.getElementById("ji-list").innerHTML=yj.ji.map(x=>`<li>${x}</li>`).join("");
+
+  const t=TYPES[type];
+  const toy=t?t.toy:{name:"神秘玩具",d:""};
+  document.getElementById("toy-box").innerHTML=`
+    <svg width="74" height="74" viewBox="0 0 74 74" aria-hidden="true">
+      <rect x="10" y="24" width="54" height="44" rx="6" fill="#E4002B" stroke="#23201C" stroke-width="3"/>
+      <path d="M22 24 Q37 4 52 24 Z" fill="#FFC72C" stroke="#23201C" stroke-width="3"/>
+      <rect x="22" y="34" width="30" height="26" rx="4" fill="#FFF4DC" stroke="#23201C" stroke-width="2"/>
+      <circle cx="32" cy="44" r="3" fill="#23201C"/><circle cx="42" cy="44" r="3" fill="#23201C"/>
+      <path d="M31 52 Q37 56 43 52" stroke="#23201C" stroke-width="2" fill="none"/>
+    </svg>
+    <div class="tinfo"><b>${toy.name}</b><br/><span style="font-size:13px">${toy.d}</span></div>`;
+
+  document.getElementById("menu-note").textContent="推荐所用单品均节选自 mcd-mcp · query-meals 实时菜单（深圳储能大厦店，2026-10-09 快照），价格与图片以官方为准。";
+}
+
+/* ===================== 交互 ===================== */
+function switchTab(n){
+  document.getElementById("tab1").classList.toggle("active",n===1);
+  document.getElementById("tab2").classList.toggle("active",n===2);
+  document.getElementById("page1").classList.toggle("hidden",n!==1);
+  document.getElementById("page2").classList.toggle("hidden",n!==2);
+}
+function showType(code){
+  const t=TYPES[code]; if(!t) return;
+  document.getElementById("modal-body").innerHTML=`
+    <div class="typecode" style="color:${t.color}">${code}</div>
+    <div class="typename">${t.name}</div>
+    <div class="typestyle">风格：${t.style}</div>
+    <div class="traits">${t.traits.map(x=>`<span class="trait">${x}</span>`).join("")}</div>
+    <div class="desc">${t.desc}</div>
+    <div class="quote">${t.quote}</div>
+    <div class="toy" style="margin-top:12px">
+      <svg width="64" height="64" viewBox="0 0 74 74" aria-hidden="true">
+        <rect x="10" y="24" width="54" height="44" rx="6" fill="#E4002B" stroke="#23201C" stroke-width="3"/>
+        <path d="M22 24 Q37 4 52 24 Z" fill="#FFC72C" stroke="#23201C" stroke-width="3"/>
+        <rect x="22" y="34" width="30" height="26" rx="4" fill="#FFF4DC" stroke="#23201C" stroke-width="2"/>
+        <circle cx="32" cy="44" r="3" fill="#23201C"/><circle cx="42" cy="44" r="3" fill="#23201C"/>
+        <path d="M31 52 Q37 56 43 52" stroke="#23201C" stroke-width="2" fill="none"/>
+      </svg>
+      <div class="tinfo"><b>本命玩具：${t.toy.name}</b><br/><span style="font-size:13px">${t.toy.d}</span></div>
+    </div>`;
+  document.getElementById("modal").classList.add("show");
+}
+function closeModal(){document.getElementById("modal").classList.remove("show");}
+
+function recomputeFromInput(){
+  const raw=document.getElementById("data-input").value.trim();
+  let data;
+  try{ data=JSON.parse(raw); }
+  catch(e){ alert("JSON 解析失败，请检查格式（应为订单数组）。"); return; }
+  // 兼容 mcd-mcp 原始结构
+  let orders=data;
+  if(data && data.data && Array.isArray(data.data.list)) orders=data.data.list.map(o=>({
+    date:(o.createTime||"").slice(0,10),
+    hour:parseInt((o.createTime||"00:00").slice(11,13)||"0",10),
+    store:o.storeName||"",
+    name:(o.orderProductList&&o.orderProductList[0]&&o.orderProductList[0].productName)||"未知",
+    amt:parseFloat(o.realTotalAmount||0)
+  }));
+  if(!Array.isArray(orders)||!orders.length){ alert("没有可用的订单数据。"); return; }
+  const res=analyze(orders);
+  if(!TYPES[res.code]){ alert("数据特征未能映射到已知类型，请检查订单内容。"); return; }
+  CURRENT=res.code;
+  renderResult(res); renderRecommend(res.code);
+  switchTab(1);
+}
+function resetData(){
+  document.getElementById("data-input").value=JSON.stringify(DEFAULT_ORDERS,null,0);
+  const res=analyze(DEFAULT_ORDERS);
+  CURRENT=res.code;
+  renderResult(res); renderRecommend(res.code);
+}
+
+/* ===================== 启动 ===================== */
+(function init(){
+  document.getElementById("data-input").value=JSON.stringify(DEFAULT_ORDERS);
+  const res=analyze(DEFAULT_ORDERS);
+  CURRENT=res.code;
+  renderResult(res);
+  renderRecommend(res.code);
+})();
+</script>
+</body>
+</html>
